@@ -1,0 +1,14 @@
+{
+    "name": "gboyegadada/jwt-auth-guard",
+    "description": "JWT auth guard for Lumen.",
+    "require": {
+        "firebase/php-jwt": "^4.0"
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Gboyega Dada",
+            "email": "boyega@gmail.com"
+        }
+    ]
+}
