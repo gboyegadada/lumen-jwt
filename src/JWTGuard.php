@@ -129,6 +129,8 @@ class JWTGuard implements Guard
       return $this->jwt->newToken($this->user, $payload);
     }
 
+    
+
     /**
      * Attempt to authenticate the user using the given credentials and return the token.
      *
