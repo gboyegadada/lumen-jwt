@@ -99,7 +99,9 @@ class JWTHelper
       if (is_null($this->decoded)) {
         try {
           $this->decoded = JWT::decode($this->token, $this->key, ['HS512']);
-        } catch (Exception $e) {}
+        }
+        catch (\Exception $e) {}
+        catch (\DomainException $e) {}
       }
       return  $this->decoded;
     }
