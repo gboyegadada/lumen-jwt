@@ -5,12 +5,19 @@ namespace Yega\Auth;
 use Illuminate\Http\Request;
 use Illuminate\Contracts\Auth\Guard;
 use Illuminate\Contracts\Auth\UserProvider;
+use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use \Firebase\JWT\JWT;
 use \Yega\Auth\JWTHelper;
 
 class JWTGuard implements Guard
 {
     use GuardHelpers;
+    /**
+     * The user we last attempted to retrieve.
+     *
+     * @var \Illuminate\Contracts\Auth\Authenticatable
+     */
+    protected $lastAttempted;
 
     /**
      * The request instance.
@@ -66,6 +73,29 @@ class JWTGuard implements Guard
     }
 
     /**
+     * Return the currently cached user.
+     *
+     * @return \Illuminate\Contracts\Auth\Authenticatable|null
+     */
+    public function getUser()
+    {
+        return $this->user;
+    }
+
+    /**
+     * Set the current user.
+     *
+     * @param  \Illuminate\Contracts\Auth\Authenticatable  $user
+     * @return $this
+     */
+    public function setUser(AuthenticatableContract $user)
+    {
+        $this->user = $user;
+
+        return $this;
+    }
+
+    /**
      * Get the token for the current request.
      *
      * @return string
@@ -87,28 +117,60 @@ class JWTGuard implements Guard
      *
      * @return string|null
      */
-    public function generateTokenByID($id)
+    public function generateTokenFromUser()
     {
-      $user = $this->provider->retrieveById($id);
       $payload =  [
             "context" => "market",
-            "user_id" => $user->id,
-            "email" => $user->email,
-            "name" => $user->getFullName()
+            "user_id" => $this->user->id,
+            "email" => $this->user->email,
+            "name" => $this->user->getFullName()
         ];
 
-      return $this->jwt->newToken($payload);
+      return $this->jwt->newToken($this->user, $payload);
     }
 
     /**
-     * Validate a user's credentials.
+     * Attempt to authenticate the user using the given credentials and return the token.
      *
-     * @param  array  $credentials
+     * @param array $credentials
+     * @param bool  $login
+     *
+     * @return mixed
+     */
+    public function attempt(array $credentials = [])
+    {
+        $this->lastAttempted = $user = $this->provider->retrieveByCredentials($credentials);
+        if ($this->hasValidCredentials($user, $credentials)) {
+          $this->login($user);
+          return true;
+        }
+        return false;
+    }
+
+    /**
+     * Create a token for a user.
+     *
+     * @param JWTSubject $user
+     *
+     * @return string
+     */
+    public function login(AuthenticatableContract $user)
+    {
+        $this->setUser($user);
+        return $this->generateTokenFromUser();
+    }
+
+    /**
+     * Determine if the user matches the credentials.
+     *
+     * @param mixed $user
+     * @param array $credentials
+     *
      * @return bool
      */
-    public function validate(array $credentials = [])
+    protected function hasValidCredentials(AuthenticatableContract $user, $credentials)
     {
-        return $this->attempt($credentials, false, false);
+        return !is_null($user) && $this->provider->validateCredentials($user, $credentials);
     }
 
     /**

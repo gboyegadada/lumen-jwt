@@ -3,7 +3,7 @@
 namespace Yega\Auth;
 
 use Illuminate\Http\Request;
-use Illuminate\Contracts\Auth\UserProvider;
+use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use \Firebase\JWT\JWT;
 
 class JWTHelper
@@ -95,7 +95,7 @@ class JWTHelper
      * @param  array $payload Data to be stored in jwt.
      * @return string JWT token string.
      */
-    public function newToken($payload)
+    public function newToken(AuthenticatableContract $user, $payload)
     {
       $this->decoded = null;
 
