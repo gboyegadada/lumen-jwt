@@ -27,18 +27,12 @@ class JWTAuthServiceProvider extends ServiceProvider
         $this->app['auth']->extend('jwt', function ($app, $name, array $config) {
             $guard = new JWTGuard(
                 $name,
-                new JWTHelper(), 
+                new JWTHelper(),
                 $app['auth']->createUserProvider($config['provider']),
                 $app['request']
             );
 
-            if (method_exists($guard, 'setDispatcher')) {
-                $guard->setDispatcher($this->app['events']);
-            }
-
-            if (method_exists($guard, 'setRequest')) {
-                $guard->setRequest($this->app->refresh('request', $guard, 'setRequest'));
-            }
+            $app->refresh('request', $guard, 'setRequest');
 
             // Return an instance of Illuminate\Contracts\Auth\Guard...
             return $guard;
