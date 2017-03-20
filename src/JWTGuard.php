@@ -4,6 +4,7 @@ namespace Yega\Auth;
 
 use Illuminate\Http\Request;
 use Illuminate\Contracts\Auth\Guard;
+use Illuminate\Auth\GuardHelpers;
 use Illuminate\Contracts\Auth\UserProvider;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use \Firebase\JWT\JWT;
@@ -129,7 +130,7 @@ class JWTGuard implements Guard
       return $this->jwt->newToken($this->user, $payload);
     }
 
-    
+
 
     /**
      * Attempt to authenticate the user using the given credentials and return the token.
