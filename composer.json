@@ -5,6 +5,11 @@
         "firebase/php-jwt": "^4.0"
     },
     "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Yega\\Auth\\": "src"
+        }
+    },
     "authors": [
         {
             "name": "Gboyega Dada",
