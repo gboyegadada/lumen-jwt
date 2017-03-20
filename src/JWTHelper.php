@@ -44,10 +44,10 @@ class JWTHelper
       $this->token = null;
 
       $this->key = env('JWT_KEY');
-      if (is_null($this->key)) throw new \RuntimeException("Please set 'JWT_KEY' in Lumen config.");
+      if (is_null($this->key)) throw new \RuntimeException("Please set 'JWT_KEY' in Lumen env file.");
 
       $this->expire_after = env('JWT_EXPIRE_AFTER');
-      if (is_null($this->expire_after)) throw new \RuntimeException("Please set 'JWT_EXPIRE_AFTER' in Lumen config.");
+      if (is_null($this->expire_after)) throw new \RuntimeException("Please set 'JWT_EXPIRE_AFTER' in Lumen env file.");
     }
 
     /**
@@ -56,7 +56,7 @@ class JWTHelper
      */
     public function isHealthy()
     {
-      return ($this->getDecoded() === null);
+      return ($this->getDecoded() !== null);
     }
 
     /**
