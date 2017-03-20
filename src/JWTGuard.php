@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Contracts\Auth\Guard;
 use Illuminate\Contracts\Auth\UserProvider;
 use \Firebase\JWT\JWT;
+use \Yega\Auth\JWTHelper;
 
 class JWTGuard implements Guard
 {
@@ -18,6 +19,14 @@ class JWTGuard implements Guard
      */
     protected $request;
 
+    /**
+     * The JWT Helper Object.
+     *
+     * @var \Yega\Auth\JWTHelper
+     */
+    protected $jwt;
+
+
 
     /**
      * Create a new authentication guard.
@@ -26,10 +35,11 @@ class JWTGuard implements Guard
      * @param  \Illuminate\Http\Request  $request
      * @return void
      */
-    public function __construct(UserProvider $provider, Request $request)
+    public function __construct(JWTHelper $jwt, UserProvider $provider, Request $request)
     {
         $this->request = $request;
         $this->provider = $provider;
+        $this->jwt = $jwt;
     }
 
     /**
@@ -47,28 +57,9 @@ class JWTGuard implements Guard
         }
 
         $user = null;
-        $jwt_token = $this->getTokenForRequest();
 
-        if (!empty($jwt_token)) {
-
-          try {
-              $jwt_key = env('APP_KEY');
-
-              /**
-               * You can add a leeway to account for when there is a clock skew times between
-               * the signing and verifying servers. It is recommended that this leeway should
-               * not be bigger than a few minutes.
-               *
-               * Source: http://self-issued.info/docs/draft-ietf-oauth-json-web-token.html#nbfDef
-               */
-              JWT::$leeway = 60; // $leeway in seconds
-              $decoded = JWT::decode($jwt_token, $jwt_key, ['HS512']);
-              $user = $this->provider->retrieveById($decoded->data->user_id);
-
-          } catch (Exception $e) {
-              $user = null;
-          }
-
+        if ($this->jwt->isHealthy()) {
+            $user = $this->provider->retrieveById($this->jwt->getPayload()->user_id);
         }
 
         return $this->user = $user;
@@ -81,11 +72,32 @@ class JWTGuard implements Guard
      */
     public function getTokenForRequest()
     {
-        if (!$this->request->headers->has('Authorization')) return null;
+        if (!$this->jwt->isHealthy() && $this->request->headers->has('Authorization')) {
+          list($jwt_token) = sscanf( $this->request->headers->get('Authorization'), 'Bearer %s');
+          $this->jwt->setToken($jwt_token);
+        }
 
-        list($jwt_token) = sscanf( $this->request->headers->get('Authorization'), 'Bearer %s');
+        return $this->jwt->getToken();
+    }
 
-        return $jwt_token;
+    /**
+     * Generate new token by ID.
+     *
+     * @param mixed $id
+     *
+     * @return string|null
+     */
+    public function generateTokenByID($id)
+    {
+      $user = $this->provider->retrieveById($id);
+      $payload =  [
+            "context" => "market",
+            "user_id" => $user->id,
+            "email" => $user->email,
+            "name" => $user->getFullName()
+        ];
+
+      return $this->jwt->newToken($payload);
     }
 
     /**
