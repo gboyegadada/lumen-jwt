@@ -34,6 +34,7 @@ $ cp vendor/laravel/lumen-framework/config/auth.php config/
 
 ```php
 # edit: config/auth.php
+
 /*
 |--------------------------------------------------------------------------
 | Authentication Guards
