@@ -92,3 +92,31 @@ $app->group(['middleware' => 'auth:api' ], function($app)  {
 });
 
 ```
+
+
+```php
+# edit: app/Http/Controllers/AuthController.php
+
+/**
+ * post: /login
+ * @return string
+ */
+public function postLogin(Request $req)
+{
+
+    $credentials = $req->only('email', 'password');
+
+    /**
+     * Token on success | false on fail
+     *
+     * @var string | boolean
+     */
+    $token = Auth::attempt($credentials);
+
+    return ($token !== false)
+            ? json_encode(['jwt' => $token])
+            : response('Unauthorized.', 401);
+
+}
+
+```
