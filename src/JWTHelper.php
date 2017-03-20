@@ -42,8 +42,12 @@ class JWTHelper
     public function __construct()
     {
       $this->token = null;
+      
       $this->key = env('JWT_KEY');
+      if (is_null($this->key)) throw new RuntimeException("Please set 'JWT_KEY' in Lumen config.");
+
       $this->expire_after = env('JWT_EXPIRE_AFTER');
+      if (is_null($this->expire_after)) throw new RuntimeException("Please set 'JWT_EXPIRE_AFTER' in Lumen config.");
     }
 
     /**
@@ -82,6 +86,7 @@ class JWTHelper
      */
     public function getDecoded()
     {
+      if (is_null($this->token)) return null;
       if (is_null($this->decoded)) {
         try {
           $this->decoded = JWT::decode($this->token, $this->key, ['HS512']);
