@@ -3,6 +3,7 @@
 namespace Yega\Auth;
 
 use Illuminate\Support\ServiceProvider;
+use \Yega\Auth\JWTHelper;
 
 class JWTAuthServiceProvider extends ServiceProvider
 {
@@ -26,6 +27,7 @@ class JWTAuthServiceProvider extends ServiceProvider
         $this->app['auth']->extend('jwt', function ($app, $name, array $config) {
             $guard = new JWTGuard(
                 $name,
+                new JWTHelper(), 
                 $app['auth']->createUserProvider($config['provider']),
                 $app['request']
             );

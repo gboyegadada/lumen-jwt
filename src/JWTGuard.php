@@ -13,6 +13,16 @@ use \Yega\Auth\JWTHelper;
 class JWTGuard implements Guard
 {
     use GuardHelpers;
+
+    /**
+     * The name of the Guard. Typically "session".
+     *
+     * Corresponds to guard name in authentication configuration.
+     *
+     * @var string
+     */
+    protected $name;
+    
     /**
      * The user we last attempted to retrieve.
      *
@@ -43,11 +53,12 @@ class JWTGuard implements Guard
      * @param  \Illuminate\Http\Request  $request
      * @return void
      */
-    public function __construct(JWTHelper $jwt, UserProvider $provider, Request $request)
+    public function __construct($name, JWTHelper $jwt, UserProvider $provider, Request $request)
     {
+        $this->name = $name;
+        $this->jwt = $jwt;
         $this->request = $request;
         $this->provider = $provider;
-        $this->jwt = $jwt;
     }
 
     /**
