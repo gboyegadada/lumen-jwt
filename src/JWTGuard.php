@@ -22,7 +22,7 @@ class JWTGuard implements Guard
      * @var string
      */
     protected $name;
-    
+
     /**
      * The user we last attempted to retrieve.
      *
@@ -155,8 +155,7 @@ class JWTGuard implements Guard
     {
         $this->lastAttempted = $user = $this->provider->retrieveByCredentials($credentials);
         if ($this->hasValidCredentials($user, $credentials)) {
-          $this->login($user);
-          return true;
+          return $this->login($user);
         }
         return false;
     }
