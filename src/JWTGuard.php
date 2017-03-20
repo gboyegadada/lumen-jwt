@@ -18,19 +18,6 @@ class JWTGuard implements Guard
      */
     protected $request;
 
-    /**
-     * The name of the query string item from the request containing the API token.
-     *
-     * @var string
-     */
-    protected $inputKey;
-
-    /**
-     * The name of the token "column" in persistent storage.
-     *
-     * @var string
-     */
-    protected $storageKey;
 
     /**
      * Create a new authentication guard.
