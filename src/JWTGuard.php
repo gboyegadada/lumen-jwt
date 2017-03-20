@@ -60,28 +60,29 @@ class JWTGuard implements Guard
         }
 
         $user = null;
-
         $jwt_token = $this->getTokenForRequest();
 
-        try {
-            $jwt_key = env('APP_KEY');
+        if (!empty($jwt_token)) {
 
-            /**
-             * You can add a leeway to account for when there is a clock skew times between
-             * the signing and verifying servers. It is recommended that this leeway should
-             * not be bigger than a few minutes.
-             *
-             * Source: http://self-issued.info/docs/draft-ietf-oauth-json-web-token.html#nbfDef
-             */
-            JWT::$leeway = 60; // $leeway in seconds
-            $decoded = JWT::decode($jwt_token, $jwt_key, ['HS512']);
+          try {
+              $jwt_key = env('APP_KEY');
 
-        } catch (Exception $e) {
-            return $this->user = null;
+              /**
+               * You can add a leeway to account for when there is a clock skew times between
+               * the signing and verifying servers. It is recommended that this leeway should
+               * not be bigger than a few minutes.
+               *
+               * Source: http://self-issued.info/docs/draft-ietf-oauth-json-web-token.html#nbfDef
+               */
+              JWT::$leeway = 60; // $leeway in seconds
+              $decoded = JWT::decode($jwt_token, $jwt_key, ['HS512']);
+              $user = $this->provider->retrieveById($decoded->data->user_id);
+
+          } catch (Exception $e) {
+              $user = null;
+          }
+
         }
-
-
-        $user = $this->provider->retrieveById($decoded->data->user_id);
 
         return $this->user = $user;
     }
