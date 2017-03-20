@@ -150,6 +150,19 @@ class JWTGuard implements Guard
         return false;
     }
 
+
+    /**
+     * Validate a user's credentials.
+     *
+     * @param array $credentials
+     *
+     * @return bool
+     */
+    public function validate(array $credentials = [])
+    {
+        return $this->attempt($credentials);
+    }
+
     /**
      * Create a token for a user.
      *
