@@ -35,6 +35,12 @@ class JWTHelper
      */
     protected $expire_after;
 
+    /**
+     * The JWT Issuer
+     * @var string
+     */
+    protected $issuer;
+
 
     /**
      * Create a new helper.
@@ -48,7 +54,10 @@ class JWTHelper
 
       $this->expire_after = env('JWT_EXPIRE_AFTER');
       if (is_null($this->expire_after)) throw new \RuntimeException("Please set 'JWT_EXPIRE_AFTER' in Lumen env file.");
-    }
+
+      $this->issuer = env('JWT_ISSUER');
+      if (is_null($this->issuer)) throw new \RuntimeException("Please set 'JWT_ISSUER' in Lumen env file.");
+}
 
     /**
      * Check if helper has a token.
@@ -109,9 +118,10 @@ class JWTHelper
       $notBefore  = $issuedAt + 10;  //Adding 10 seconds
       $expire     = $notBefore + $this->expire_after;
       $jwt_key = $this->key;
+      $issuer = $this->issuer;
 
       $token = [
-          "iss" => env('JWT_ISSUER'),
+          "iss" => $this->issuer,
           "jti" => $tokenId,
           "iat" => $issuedAt,
           "nbf" => $notBefore,
