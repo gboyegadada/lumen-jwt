@@ -161,12 +161,12 @@ class JWTHelper
       $notBefore  = $issuedAt + 10; //Adding 10 seconds
       $expire     = $notBefore + $this->expire_after;
 
-      $token["iat"] = $issuedAt;
-      $token["nbf"] = $notBefore;
-      $token["exp"] = $expire;
+      $decoded["iat"] = $issuedAt;
+      $decoded["nbf"] = $notBefore;
+      $decoded["exp"] = $expire;
 
 
-      return $this->token = JWT::encode($token, $this->key, 'HS512');
+      return $this->token = JWT::encode($decoded, $this->key, 'HS512');
 
     }
 
@@ -184,12 +184,12 @@ class JWTHelper
       $notBefore  = $issuedAt + 10; //Adding 10 seconds - no need, I know
       $expire     = $notBefore + 1; //Adding 1 second - no need, I know
 
-      $token["iat"] = $issuedAt;
-      $token["nbf"] = $notBefore;
-      $token["exp"] = $expire;
+      $decoded["iat"] = $issuedAt;
+      $decoded["nbf"] = $notBefore;
+      $decoded["exp"] = $expire;
 
 
-      return $this->token = JWT::encode($token, $this->key, 'HS512');
+      return $this->token = JWT::encode($decoded, $this->key, 'HS512');
 
     }
 
