@@ -170,6 +170,29 @@ class JWTHelper
 
     }
 
+    /**
+     * Invalidate token
+     * @return string New Token (dead on arrival)
+     */
+    public function invalidateToken()
+    {
+      $decoded = (array) $this->getDecoded();
+      $decoded['data'] = (array) $decoded['data'];
+      $this->decoded = null;
+
+      $issuedAt   = time() - $this->expire_after - 7200; // less {expiry} and 2 hours
+      $notBefore  = $issuedAt + 10; //Adding 10 seconds - no need, I know
+      $expire     = $notBefore + 1; //Adding 1 second - no need, I know
+
+      $token["iat"] = $issuedAt;
+      $token["nbf"] = $notBefore;
+      $token["exp"] = $expire;
+
+
+      return $this->token = JWT::encode($token, $this->key, 'HS512');
+
+    }
+
 
 
 
