@@ -29,6 +29,12 @@ class JWTHelper
     protected $key;
 
     /**
+     * [$includes fields in USER instance to include in JWT]
+     * @var string[]
+     */
+    protected $includes;
+
+    /**
      * Expire (in seconds)
      *
      * @var string
@@ -57,7 +63,11 @@ class JWTHelper
 
       $this->issuer = env('JWT_ISSUER');
       if (is_null($this->issuer)) throw new \RuntimeException("Please set 'JWT_ISSUER' in Lumen env file.");
-}
+
+      $includes = env('JWT_INCLUDES');
+      // if (is_null($includes)) throw new \RuntimeException("Please set 'JWT_INCLUDES' in Lumen env file. Ex: id,email,phone");
+      $this->includes = is_null($includes) ? [] : explode(",", $includes);
+    }
 
     /**
      * Check if helper has a token.
@@ -108,10 +118,10 @@ class JWTHelper
 
     /**
      * Generate new token.
-     * @param  array $payload Data to be stored in jwt.
+     * @param  AuthenticatableContract $user.
      * @return string JWT token string.
      */
-    public function newToken(AuthenticatableContract $user, $payload)
+    public function newToken(AuthenticatableContract $user)
     {
       $this->decoded = null;
 
@@ -122,6 +132,9 @@ class JWTHelper
       $jwt_key = $this->key;
       $issuer = $this->issuer;
 
+      $payload = [];
+      foreach ($this->includes as $k) $payload[$k] = $this->user->{$k};
+
       $token = [
           "iss" => $this->issuer,
           "jti" => $tokenId,
@@ -130,7 +143,6 @@ class JWTHelper
           "exp" => $expire,
           "data" => $payload
         ];
-
 
       return $this->token = JWT::encode($token, $jwt_key, 'HS512');
     }

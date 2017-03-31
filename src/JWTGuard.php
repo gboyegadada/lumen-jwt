@@ -134,14 +134,7 @@ class JWTGuard implements Guard
      */
     public function generateTokenFromUser()
     {
-      $payload =  [
-            "context" => "market",
-            "user_id" => $this->user->id,
-            "email" => $this->user->email,
-            "name" => $this->user->getFullName()
-        ];
-
-      return $this->jwt->newToken($this->user, $payload);
+      return $this->jwt->newToken($this->user);
     }
 
 
