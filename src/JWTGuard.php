@@ -44,6 +44,13 @@ class JWTGuard implements Guard
      */
     protected $jwt;
 
+    /**
+     * The current User.
+     *
+     * @var \Illuminate\Contracts\Auth\Authenticatable
+     */
+    protected $user;
+
 
 
     /**
@@ -180,6 +187,20 @@ class JWTGuard implements Guard
     {
         $this->setUser($user);
         return $this->generateTokenFromUser();
+    }
+
+    /**
+     * Invalidate token for a user.
+     *
+     *
+     * @return string
+     */
+    public function logout()
+    {
+        $this->user = null;
+        return $this->jwt->isHealthy()
+                ? $this->jwt->invalidateToken()
+                : null;
     }
 
     /**
