@@ -133,7 +133,7 @@ class JWTHelper
       $issuer = $this->issuer;
 
       $payload = [];
-      foreach ($this->includes as $k) $payload[$k] = $this->user->{$k};
+      foreach ($this->includes as $k) $payload[$k] = $user->{$k};
 
       $token = [
           "iss" => $this->issuer,
