@@ -64,7 +64,7 @@ class JWTHelper
       $this->issuer = env('JWT_ISSUER');
       if (is_null($this->issuer)) throw new \RuntimeException("Please set 'JWT_ISSUER' in Lumen env file.");
 
-      $includes = env('JWT_INCLUDES');
+      $includes = env('JWT_INCLUDE');
       // if (is_null($includes)) throw new \RuntimeException("Please set 'JWT_INCLUDES' in Lumen env file. Ex: id,email,phone");
       $this->includes = is_null($includes) ? [] : explode(",", $includes);
     }
