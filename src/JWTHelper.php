@@ -66,7 +66,8 @@ class JWTHelper
 
       $includes = env('JWT_INCLUDE');
       // if (is_null($includes)) throw new \RuntimeException("Please set 'JWT_INCLUDES' in Lumen env file. Ex: id,email,phone");
-      $this->includes = is_null($includes) ? [] : explode(",", $includes);
+      $this->includes = is_null($includes) ? ['id'] : explode(",", $includes);
+      if (!in_array('id', $this->includes)) $this->includes[] = 'id'; // always add user id
     }
 
     /**
