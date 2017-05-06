@@ -178,12 +178,12 @@ var request = new Request(url, {
 fetch(request)
 .then(reponse) {
   if(response.ok) {
-    return response.json();
+    return response.text(); 
   }
   throw new Error('Network response was not ok.');
 }
-.then(function(json) {
-    console.log(json);
+.then(function(data) {
+    console.log(data);
 })
 
 ```
