@@ -75,10 +75,11 @@ $ cp vendor/laravel/lumen-framework/config/auth.php config/
 JWT_KEY=XXXXXXXXXXXXXXXXXXXXX
 JWT_EXPIRE_AFTER=7200
 JWT_ISSUER=myappname-or-domain
+JWT_INCLUDE=id,email,avatar,full_name,first_name,last_name
 
 ```
 
-## Use
+## Use (server side): Lumen
 
 ```php
 # edit: routes/web.php
@@ -118,5 +119,71 @@ public function postLogin(Request $req)
             : response('Unauthorized.', 401);
 
 }
+
+```
+
+## Use (client side): JavaScript
+
+# 1. Login to get a token:
+
+```javascript
+
+const url = 'http://localhost:8000/login';
+
+// Login credentials
+let data = {
+    email: 'boyega@gmail.com',
+    password: 'areacode234'
+}
+
+// Create our request constructor with all the parameters we need
+var request = new Request(url, {
+    method: 'POST',
+    body: data
+});
+
+fetch(request)
+.then(reponse) {
+  if(response.ok) {
+    return response.json();
+  }
+  throw new Error('Network response was not ok.');
+}
+.then(function(json) {
+    localStorage.setItem('token', json.jwt);
+});
+
+```
+
+# 2. Make subsequent requests using our JWT token:
+
+```javascript
+
+const url = 'http://localhost:8000/test';
+
+// Add our token in the Authorization header
+var token = localStorage.getItem('token');
+var myHeaders = new Headers();
+myHeaders.append("Authorization", "Bearer "+token);
+
+/* !! important: make sure there is [:space:] between "Bearer" and token !! */
+
+// Create our request constructor with all the parameters we need
+var request = new Request(url, {
+    method: 'POST',
+    body: data,
+    headers: myHeaders    
+});
+
+fetch(request)
+.then(reponse) {
+  if(response.ok) {
+    return response.json();
+  }
+  throw new Error('Network response was not ok.');
+}
+.then(function(json) {
+    console.log(json);
+})
 
 ```
