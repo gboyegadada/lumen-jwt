@@ -72,12 +72,23 @@ $ cp vendor/laravel/lumen-framework/config/auth.php config/
 ```text
 # edit: .env
 
+# required fields
 JWT_KEY=XXXXXXXXXXXXXXXXXXXXX
 JWT_EXPIRE_AFTER=7200
 JWT_ISSUER=myappname-or-domain
+
+# optional fields
 JWT_INCLUDE=id,email,avatar,full_name,first_name,last_name
+JWT_NBF_DELAY=5
 
 ```
+
+`JWT_INCLUDE` lists the user properties to include in the `data` property of the
+token. Defaults to `id`.
+
+`JWT_NBF_DELAY` is the number of seconds after generation at which the token
+becomes valid (that is, the token is *n*ot valid *b*e*f*ore now + delay).
+Defaults to `10`.
 
 ## Use (server side): Lumen
 

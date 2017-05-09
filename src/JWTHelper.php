@@ -47,6 +47,12 @@ class JWTHelper
      */
     protected $issuer;
 
+    /**
+     * Delay in seconds before token will be valid
+     * @var integer
+     */
+    protected $notBefore_delay;
+
 
     /**
      * Create a new helper.
@@ -68,6 +74,8 @@ class JWTHelper
       // if (is_null($includes)) throw new \RuntimeException("Please set 'JWT_INCLUDES' in Lumen env file. Ex: id,email,phone");
       $this->includes = is_null($includes) ? ['id'] : explode(",", $includes);
       if (!in_array('id', $this->includes)) $this->includes[] = 'id'; // always add user id
+
+      $this->notBefore_delay = env('JWT_NBF_DELAY', 10);
     }
 
     /**
@@ -128,7 +136,7 @@ class JWTHelper
 
       $tokenId = md5(uniqid($user->email, true));
       $issuedAt   = time();
-      $notBefore  = $issuedAt + 10;  //Adding 10 seconds
+      $notBefore  = $issuedAt + $this->notBefore_delay;
       $expire     = $notBefore + $this->expire_after;
       $jwt_key = $this->key;
       $issuer = $this->issuer;
