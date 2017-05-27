@@ -144,6 +144,15 @@ class JWTGuard implements Guard
       return $this->jwt->newToken($this->user);
     }
 
+    /**
+     * Determine if the current user is authenticated.
+     *
+     * @return bool
+     */
+    public function check()
+    {
+        return $this->jwt->isHealthy();
+    }
 
 
     /**
