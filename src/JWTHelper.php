@@ -178,6 +178,18 @@ class JWTHelper
     }
 
     /**
+     * Get value stored in token id field
+     * @return string
+     */
+    public function getId()
+    {
+      $payload = $this->getPayload();
+      return !is_null($payload)
+                ? $payload->{$this->id_field}
+                : null;
+    }
+
+    /**
      * Refresh token
      * @return string New Token
      */
