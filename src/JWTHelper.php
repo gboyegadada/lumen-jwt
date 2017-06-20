@@ -35,8 +35,13 @@ class JWTHelper
     protected $includes;
 
     /**
+     * JWT payload property to use when looking up users by primary key.
+     * @var string
+     */
+    protected $id_field;
+
+    /**
      * Expire (in seconds)
-     *
      * @var string
      */
     protected $expire_after;
@@ -70,10 +75,14 @@ class JWTHelper
       $this->issuer = env('JWT_ISSUER');
       if (is_null($this->issuer)) throw new \RuntimeException("Please set 'JWT_ISSUER' in Lumen env file.");
 
+      $this->id_field = env('JWT_ID_FIELD');
+      if (is_null($this->id_field)) {
+        $this->id_field = 'id';
+      }
+
       $includes = env('JWT_INCLUDE');
-      // if (is_null($includes)) throw new \RuntimeException("Please set 'JWT_INCLUDES' in Lumen env file. Ex: id,email,phone");
-      $this->includes = is_null($includes) ? ['id'] : explode(",", $includes);
-      if (!in_array('id', $this->includes)) $this->includes[] = 'id'; // always add user id
+      $this->includes = is_null($includes) ? [$this->id_field] : explode(",", $includes);
+      if (!in_array($this->id_field, $this->includes)) $this->includes[] = $this->id_field; // always add user id
 
       $this->notBefore_delay = env('JWT_NBF_DELAY', 10);
     }
@@ -165,6 +174,18 @@ class JWTHelper
       $decoded = $this->getDecoded();
       return !is_null($decoded)
                 ? $decoded->data
+                : null;
+    }
+
+    /**
+     * Get value stored in token id field
+     * @return string
+     */
+    public function getId()
+    {
+      $payload = $this->getPayload();
+      return !is_null($payload)
+                ? $payload->{$this->id_field}
                 : null;
     }
 
