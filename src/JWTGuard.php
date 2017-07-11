@@ -154,6 +154,16 @@ class JWTGuard implements Guard
         return $this->jwt->isHealthy();
     }
 
+    /**
+     * Get a previously generated token's data.
+     *
+     * @return bool
+     */
+    public function getSaved()
+    {
+        return $this->jwt->getPayload();
+    }
+
 
     /**
      * Attempt to authenticate the user using the given credentials and return the token.
