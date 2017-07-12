@@ -196,6 +196,19 @@ class JWTGuard implements Guard
     }
 
     /**
+     * Validate a token.
+     *
+     * @param string $token
+     *
+     * @return bool
+     */
+    public function validateToken($token)
+    {
+        $this->jwt->setToken($token);
+        return ($this->jwt->getDecoded() != null);
+    }
+
+    /**
      * Create a token for a user.
      *
      * @param JWTSubject $user
