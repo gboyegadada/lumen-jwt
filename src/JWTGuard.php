@@ -161,7 +161,7 @@ class JWTGuard implements Guard
      */
     public function getSaved()
     {
-        return $this->jwt->getPayload();
+        return $this->jwt->getDecoded();
     }
 
 
@@ -202,10 +202,14 @@ class JWTGuard implements Guard
      *
      * @return bool
      */
-    public function validateToken($token)
+    public function validateToken($token, $data)
     {
         $this->jwt->setToken($token);
-        return ($this->jwt->getDecoded() != null);
+        parse_str(urldecode($data), $decoded_data);
+        $decoded_token = (array) $this->getSaved();
+        unset($decoded_token['data']);
+
+        return ($decoded_token != null && $decoded_token == $decoded_data);
     }
 
     /**
