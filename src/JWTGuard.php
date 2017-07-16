@@ -87,7 +87,7 @@ class JWTGuard implements Guard
         $user = null;
 
         if ($this->jwt->isHealthy()) {
-            $id = $this->jwt->getPayload()->id;
+            $id = $this->jwt->getId();
             $user = $this->provider->retrieveById($id);
         }
 

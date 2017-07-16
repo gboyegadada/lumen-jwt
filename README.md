@@ -78,13 +78,18 @@ JWT_EXPIRE_AFTER=7200
 JWT_ISSUER=myappname-or-domain
 
 # optional fields
-JWT_INCLUDE=id,email,avatar,full_name,first_name,last_name
+JWT_ID_FIELD=user_id
+JWT_INCLUDE=email,avatar,full_name,first_name,last_name
 JWT_NBF_DELAY=5
 
 ```
 
+`JWT_ID_FIELD` is the name of the property on the user model that the
+Laravel authentication provider uses to look up accounts. Defaults to `id`.
+
 `JWT_INCLUDE` lists the user properties to include in the `data` property of the
-token. Defaults to `id`.
+token. If the `JWT_ID_FIELD` is not part of this list, it will be automatically
+added. Defaults to the id field.
 
 `JWT_NBF_DELAY` is the number of seconds after generation at which the token
 becomes valid (that is, the token is *n*ot valid *b*e*f*ore now + delay).
