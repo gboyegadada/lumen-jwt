@@ -45,15 +45,6 @@ class JWTGuard implements Guard
     protected $jwt;
 
     /**
-     * The current User.
-     *
-     * @var \Illuminate\Contracts\Auth\Authenticatable
-     */
-    protected $user;
-
-
-
-    /**
      * Create a new authentication guard.
      *
      * @param  \Illuminate\Contracts\Auth\UserProvider  $provider
