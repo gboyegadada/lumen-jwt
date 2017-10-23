@@ -159,7 +159,8 @@ class JWTHelper
           "iat" => $issuedAt,
           "nbf" => $notBefore,
           "exp" => $expire,
-          "data" => $payload
+          "data" => $payload,
+          "sub" => $user->{$this->id_field}
         ];
 
       return $this->token = JWT::encode($token, $jwt_key, 'HS512');
