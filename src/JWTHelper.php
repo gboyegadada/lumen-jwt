@@ -149,6 +149,7 @@ class JWTHelper
       $expire     = $notBefore + $this->expire_after;
       $jwt_key = $this->key;
       $issuer = $this->issuer;
+      $subject = $user->{$this->id_field};
 
       $payload = [];
       foreach ($this->includes as $k) $payload[$k] = $user->{$k};
@@ -159,7 +160,8 @@ class JWTHelper
           "iat" => $issuedAt,
           "nbf" => $notBefore,
           "exp" => $expire,
-          "data" => $payload
+          "data" => $payload,
+          "sub" => $subject
         ];
 
       return $this->token = JWT::encode($token, $jwt_key, 'HS512');
