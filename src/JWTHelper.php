@@ -164,6 +164,8 @@ class JWTHelper
           "sub" => $subject
         ];
 
+      $this->decoded = (object) $token;
+
       return $this->token = JWT::encode($token, $jwt_key, 'HS512');
     }
 

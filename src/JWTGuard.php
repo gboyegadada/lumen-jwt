@@ -156,6 +156,16 @@ class JWTGuard implements Guard
         return $this->jwt->isHealthy();
     }
 
+    /**
+     * Get a previously generated token's data.
+     *
+     * @return bool
+     */
+    public function getSaved()
+    {
+        return $this->jwt->getDecoded();
+    }
+
 
     /**
      * Attempt to authenticate the user using the given credentials and return the token.
@@ -185,6 +195,23 @@ class JWTGuard implements Guard
     public function validate(array $credentials = [])
     {
         return $this->attempt($credentials);
+    }
+
+    /**
+     * Validate a token.
+     *
+     * @param string $token
+     *
+     * @return bool
+     */
+    public function validateToken($token, $data)
+    {
+        $this->jwt->setToken($token);
+        parse_str(urldecode($data), $decoded_data);
+        $decoded_token = (array) $this->getSaved();
+        unset($decoded_token['data']);
+
+        return ($decoded_token != null && $decoded_token == $decoded_data);
     }
 
     /**
