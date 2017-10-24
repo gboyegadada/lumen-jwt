@@ -151,8 +151,8 @@ class JWTHelper
       $issuer = $this->issuer;
       $subject = $user->{$this->id_field};
 
-      $payload = [];
-      foreach ($this->includes as $k) $payload[$k] = $user->{$k};
+      $data = [];
+      foreach ($this->includes as $k) $data[$k] = $user->{$k};
 
       $token = [
           "iss" => $this->issuer,
@@ -160,23 +160,11 @@ class JWTHelper
           "iat" => $issuedAt,
           "nbf" => $notBefore,
           "exp" => $expire,
-          "data" => $payload,
+          "data" => $data,
           "sub" => $subject
         ];
 
       return $this->token = JWT::encode($token, $jwt_key, 'HS512');
-    }
-
-    /**
-     * Get token payload
-     * @return StdObject JSON Object
-     */
-    public function getPayload()
-    {
-      $decoded = $this->getDecoded();
-      return !is_null($decoded)
-                ? $decoded->data
-                : null;
     }
 
     /**
@@ -185,9 +173,9 @@ class JWTHelper
      */
     public function getId()
     {
-      $payload = $this->getPayload();
-      return !is_null($payload)
-                ? $payload->{$this->id_field}
+      $decoded = $this->getDecoded();
+      return !is_null($decoded)
+                ? $decoded->data->{$this->id_field}
                 : null;
     }
 

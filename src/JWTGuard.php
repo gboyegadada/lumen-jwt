@@ -111,7 +111,7 @@ class JWTGuard implements Guard
     /**
      * Get the token for the current request.
      *
-     * @return string
+     * @return string|object
      */
     public function getTokenForRequest()
     {
@@ -122,6 +122,17 @@ class JWTGuard implements Guard
 
         return $this->jwt->getToken();
     }
+
+    /**
+        * Get the JWT payload for the current request.
+        *
+        * @return object
+        */
+    public function getPayloadForRequest()
+    {
+        return $this->jwt->getDecoded();
+    }
+    
 
     /**
      * Generate new token by ID.
